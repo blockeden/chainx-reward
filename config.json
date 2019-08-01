@@ -1,0 +1,7 @@
+{
+    "wsUrl": "wss://w1.chainx.org.cn/ws",
+    "publicKey": "",
+    "rewardThreshold": 1000000000,
+    "acceleration": 10,
+    "privateKey": ""
+}
