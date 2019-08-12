@@ -1,12 +1,13 @@
 const axios = require('axios')
 const config = require('./config.json')
 const Chainx = require('chainx.js').default;
+const delay = require('delay')
 
 async function mainLogic() {
     // get info
     const validatorsInfo = await axios.get(`https://api.chainx.org.cn/intention/${config.publicKey}`)
-    const { lastTotalVoteWeight } = validatorsInfo.data
-    console.log({ lastTotalVoteWeight })
+    const total_nomination = validatorsInfo.data.totalNomination
+    console.log({ total_nomination })
     let page_size = 1000
     let page = 0
     let total = page_size
@@ -40,29 +41,32 @@ async function mainLogic() {
     console.log({ pcx_balance })
 
     // transfer
-    for (let item of nominators) {
+    for (let i = 0; i < nominators.length; i++) {
+        let item = nominators[i]
         if (item.nomination >= config.rewardThreshold) {
             const nomination = item.nomination
             const address = chainx.account.encodeAddress(item.nominator)
             if (address != node_address) {
-                const reward = Math.floor(nomination / lastTotalVoteWeight * pcx_balance)
-                const extrinsic = chainx.asset.transfer(address, 'PCX', reward, 'test for reward');
+                const reward = Math.floor(nomination / total_nomination * pcx_balance)
+                const extrinsic = chainx.asset.transfer(address, 'PCX', reward, '自动脚本分红');
                 // console.log({ nomination, address, reward })
                 try {
-                    const tx_hash = await fn_sign_and_send(extrinsic)
+                    const tx_hash = await fn_sign_and_send(extrinsic, i)
                     console.log({ nomination, address, reward, tx_hash })
+                    await delay(2000)
                 } catch (err) {
                     console.error({ nomination, address, reward, err })
                 }
+
             }
         }
     }
 
 }
 
-function fn_sign_and_send(extrinsic) {
+function fn_sign_and_send(extrinsic, acceleration) {
     return new Promise((resolve, reject) => {
-        extrinsic.signAndSend(config.privateKey, { acceleration: config.acceleration }, (err, result) => {
+        extrinsic.signAndSend(config.privateKey, { acceleration: config.acceleration + acceleration }, (err, result) => {
             if (err) {
                 reject(err.message)
             } else {
