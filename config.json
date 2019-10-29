@@ -1,7 +1,10 @@
 {
-    "wsUrl": "wss://w1.chainx.org.cn/ws",
+    "wsUrl": "wss://w1.chainx.org/ws",
     "publicKey": "",
     "rewardThreshold": 1000000000,
-    "acceleration": 10,
-    "privateKey": ""
+    "fee": 25000,
+    "rate": 0.8,
+    "acceleration": 1,
+    "privateKey": "",
+    "collectAddress": ""
 }
