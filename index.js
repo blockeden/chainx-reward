@@ -72,7 +72,7 @@ async function main() {
     const my_balance = await getPcxBalance(chainx, node_address)
     console.log({ my_balance: my_balance / 1e8 })
 
-    const collect = chainx.asset.transfer(config.collectAddress, 'PCX', my_balance - 0.01, '归集')
+    const collect = chainx.asset.transfer(config.collectAddress, 'PCX', my_balance - 0.01 * 1e8, '归集')
     try {
         const tx_hash = await fn_sign_and_send(collect)
         console.log({ tx_type: '归集', tx_hash })
